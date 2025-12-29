@@ -75,6 +75,7 @@ app.use(prefix + '/courses', require('./routes/courses.routes'));
 app.use(prefix + '/grades', require('./routes/grades.routes'));
 const usersRoutes = require('./routes/users.routes');
 app.use(prefix + '/users', usersRoutes);
+app.use(prefix + '/stats', require('./routes/stats.routes'));
 
 
 

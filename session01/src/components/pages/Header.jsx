@@ -1,12 +1,22 @@
-function Header() {
+import { IconButton, Box } from "@mui/material";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+
+function Header({ toggleTheme, mode }) {
   return (
-    <header >
-      <img 
-        src="/mbds_logo_transparent.svg" 
-        alt="Logo formation" 
-      />
-      <h1>Introduction à React</h1>
-      <h2>A la découverte des premières notions de React</h2>
+    <header>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          p: 1,
+        }}
+      >
+        <IconButton onClick={toggleTheme} color="inherit">
+          {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+        </IconButton>
+      </Box>
     </header>
   );
 }

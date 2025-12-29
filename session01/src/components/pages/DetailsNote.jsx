@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { gradesAPI } from "../services/api";
+import { gradesAPI } from "../../services/api";
 import { Box, Paper, Chip } from "@mui/material";
 
 export default function DetailsNote() {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { studentsAPI } from "../services/api";
+import { studentsAPI } from "../../services/api";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";

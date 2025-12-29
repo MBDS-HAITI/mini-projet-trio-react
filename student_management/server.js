@@ -1,61 +1,27 @@
-let express = require('express');
-let app = express();
-let bodyParser = require('body-parser');
-let student = require('./routes/students');
-let course = require('./routes/courses');
-let grade = require('./routes/grades');
+const app = require('./app');
+const config = require('./config/env');
+const { connectDB } = require('./config/database');
 
-let mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-//mongoose.set('debug', true);
-
-// TODO remplacer toute cette chaine par l'URI de connexion à votre propre base dans le cloud
-const uri = 'mongodb+srv://times13:times13@cluster0.pikxrrd.mongodb.net/?appName=Cluster0';
-
-
-const options = {};
-
-mongoose.connect(uri, options)
-    .then(() => {
-            console.log("Connexion à la base OK");
-        },
-        err => {
-            console.log('Erreur de connexion: ', err);
+// Fonction pour démarrer le serveur
+const startServer = async () => {
+    try {
+        // 1. Connexion à la base de données
+        await connectDB();
+        
+        // 2. Démarrage du serveur Express
+        app.listen(config.port, '0.0.0.0', () => {
+            console.log('🚀 ====================================');
+            console.log(`🚀 Serveur démarré avec succès!`);
+            console.log(`🚀 Environnement: ${config.nodeEnv}`);
+            console.log(`🚀 URL: http://localhost:${config.port}`);
+            console.log('🚀 ====================================');
         });
+        
+    } catch (error) {
+        console.error('❌ Erreur lors du démarrage du serveur:', error);
+        process.exit(1);
+    }
+};
 
-// Pour accepter les connexions cross-domain (CORS)
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    next();
-});
-
-// Pour les formulaires
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-
-let port = process.env.PORT || 8010;
-
-// les routes
-const prefix = '/api';
-
-app.route(prefix + '/students')
-    .get(student.getAll)
-    .post(student.create);
-
-app.route(prefix + '/courses')
-    .get(course.getAll)
-    .post(course.create);
-
-app.route(prefix + '/grades')
-    .get(grade.getAll)
-    .post(grade.create);
-
-// On démarre le serveur
-app.listen(port, "0.0.0.0");
-console.log('Serveur démarré sur http://localhost:' + port);
-
-module.exports = app;
-
-
+// Démarrage de l'application
+startServer();

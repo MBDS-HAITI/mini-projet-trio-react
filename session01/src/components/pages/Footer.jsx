@@ -1,10 +1,8 @@
+
 function Footer() {
-  const annee = new Date().getFullYear();
-  const nom = "Alfred";
-  const prenom = "Times";
   return (
     <footer>
-       © {annee} - {prenom}.{nom}, Tous droits réservés.
+     <p>© 2026 Student Management System</p>
     </footer>
   );
 }

@@ -1,0 +1,21 @@
+/* Matieres.css */
+
+.matieres-header {
+  padding: 16px;
+}
+
+.matieres-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.matieres-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.matieres-table-head {
+  font-weight: bold;
+  color: white;
+}

@@ -1,24 +1,48 @@
-import { Box, Paper } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import "./APropos.css";
 
 export default function APropos() {
+  const theme = useTheme();
+
   return (
-    <Box sx={{ p: 3 }}>
-      <Paper sx={{ p: 4, borderRadius: 3, maxWidth: 800, margin: "auto" }}>
-        <h1 style={{ color: "#1976d2", marginBottom: "10px" }}>
+    <Box className="apropos-container" sx={{ bgcolor: "background.default" }}>
+      <Paper
+        className="apropos-paper"
+        elevation={3}
+        sx={{
+          bgcolor: "background.paper",
+          color: "text.primary",
+        }}
+      >
+        <Typography
+          variant="h5"
+          className="apropos-title"
+          sx={{ color: theme.palette.primary.main }}
+        >
           ℹ️ À propos de cette application
-        </h1>
+        </Typography>
 
-        <p style={{ fontSize: "1rem", color: "#444", lineHeight: "1.6" }}>
-          Cette application a été développée dans le cadre du cours MBDS Haïti. 
-          Elle permet de gérer les étudiants, les matières et leurs notes de manière 
+        <Typography
+          className="apropos-text"
+          sx={{ color: theme.palette.text.primary }}
+        >
+          Cette application a été développée dans le cadre du cours MBDS Haïti.
+          Elle permet de gérer les étudiants, les matières et leurs notes de manière
           dynamique grâce à une API Node.js/MongoDB et une interface réalisée en React.
-        </p>
+        </Typography>
 
-        <p style={{ fontSize: "1rem", color: "#444", lineHeight: "1.6" }}>
+        <Typography
+          className="apropos-text"
+          sx={{ color: theme.palette.text.primary }}
+        >
           Elle illustre l’utilisation de technologies modernes telles que :
-        </p>
+        </Typography>
 
-        <ul style={{ color: "#444", lineHeight: "1.6" }}>
+        <ul
+          className="apropos-list"
+          style={{ color: theme.palette.text.primary }}
+        >
           <li>React + Hooks</li>
           <li>React Router v6</li>
           <li>Material UI</li>
@@ -26,14 +50,20 @@ export default function APropos() {
           <li>MongoDB / Mongoose</li>
         </ul>
 
-        <p style={{ fontSize: "1rem", color: "#444", lineHeight: "1.6" }}>
-          Le but est d’offrir une interface moderne et intuitive, tout en travaillant 
+        <Typography
+          className="apropos-text"
+          sx={{ color: theme.palette.text.primary }}
+        >
+          Le but est d’offrir une interface moderne et intuitive, tout en travaillant
           avec de vraies données provenant d’une API.
-        </p>
+        </Typography>
 
-        <p style={{ fontSize: "1rem", color: "#1976d2", fontWeight: "bold" }}>
+        <Typography
+          className="apropos-highlight"
+          sx={{ color: theme.palette.primary.main }}
+        >
           Merci d’utiliser cette application 👨‍🎓🚀
-        </p>
+        </Typography>
       </Paper>
     </Box>
   );

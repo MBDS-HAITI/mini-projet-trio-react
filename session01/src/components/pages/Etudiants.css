@@ -1,0 +1,26 @@
+/* Etudiants.css */
+
+.etudiants-header {
+  padding: 16px;
+}
+
+.etudiants-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.etudiants-subtitle {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.etudiants-table-head {
+  font-weight: bold;
+  color: white;
+}
+
+.etudiants-small {
+  font-size: 0.8rem;
+  opacity: 0.85;
+}

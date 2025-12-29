@@ -1,0 +1,29 @@
+/* Notes.css */
+
+.notes-header {
+  padding: 16px;
+}
+
+.notes-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.notes-subtitle {
+  margin: 4px 0;
+  font-size: 0.9rem;
+}
+
+.notes-small {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.notes-table-head {
+  font-weight: bold;
+  color: white;
+}
+
+.notes-search {
+  border-radius: 6px;
+}

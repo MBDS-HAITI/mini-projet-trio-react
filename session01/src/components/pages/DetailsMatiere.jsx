@@ -1,59 +1,153 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { gradesAPI } from "../../services/api";
-import { Box, Chip, Paper } from "@mui/material";
+import { coursesAPI, gradesAPI } from "../../services/api";
+import { useAuth } from "../../contexts/AuthContext";
+import { useTheme } from "@mui/material/styles";
+
+
+import {
+  Box,
+  Chip,
+  Paper,
+  CircularProgress,
+  Typography,
+  Button
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 export default function DetailsMatiere() {
-  const { name } = useParams(); // On récupère la matière depuis l'URL
+  const { id } = useParams();
+  const navigate = useNavigate(); // ✅ pour le retour
+  const { user } = useAuth();
+  const theme = useTheme();
+
+  const [course, setCourse] = useState(null);
   const [grades, setGrades] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const allGrades = await gradesAPI.getAll();
+      try {
+        let courseData;
 
-      // On récupère uniquement les notes de cette matière
-      const filtered = allGrades.filter(
-        (g) => g.course?.name === decodeURIComponent(name)
-      );
+        if (user?.role === "STUDENT") {
+          courseData = await coursesAPI.getByIdStudent(id);
+        } else {
+          courseData = await coursesAPI.getById(id);
+        }
 
-      setGrades(filtered);
-      setLoading(false);
+        setCourse(courseData);
+
+        let gradesData = [];
+
+        if (user?.role === "STUDENT") {
+          // ✅ L’étudiant récupère SES notes puis on filtre par cours
+          const myGrades = await gradesAPI.getMyGrades();
+          gradesData = myGrades.filter(
+            g => g.course?._id === id
+          );
+        } else {
+          // ✅ Admin / Scolarité → toutes les notes du cours
+          gradesData = await gradesAPI.getByCourse(id);
+        }
+
+        setGrades(Array.isArray(gradesData) ? gradesData : []);
+      } catch (error) {
+        console.error("Erreur chargement:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
-  }, [name]);
+  }, [id]);
 
-  if (loading) return <Box p={3}>Chargement...</Box>;
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" p={3}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!course) {
+    return <Box p={3}>Matière introuvable</Box>;
+  }
+
+  const moyenne =
+    grades.length > 0
+      ? (grades.reduce((sum, g) => sum + g.grade, 0) / grades.length).toFixed(2)
+      : null;
 
   return (
     <Box p={3}>
-      <Paper sx={{ p: 3 }}>
-        <h2 style={{ margin: 0, color: "#1976d2" }}>
-          Détails de la matière : {decodeURIComponent(name)}
-        </h2>
+      {/* ✅ Bouton Retour */}
+      <Button
+        variant="outlined"
+        startIcon={<ArrowBackIcon />}
+        onClick={() => navigate(-1)}
+        sx={{ mb: 2 }}
+      >
+        Retour
+      </Button>
 
-        <p style={{ marginTop: "10px", color: "#555" }}>
-          Nombre de notes : <strong>{grades.length}</strong>
-        </p>
+      <Paper sx={{ p: 3 }}>
+        <Typography variant="h5" sx={{ color: "primary.main", mb: 1 }}>
+          📚 {course.name}
+        </Typography>
+
+        <Box sx={{ mt: 2, mb: 3 }}>
+          <Typography>
+            <strong>Code :</strong> {course.code}
+          </Typography>
+          <Typography>
+            <strong>Nombre de notes :</strong> {grades.length}
+          </Typography>
+          {moyenne && (
+            <Typography>
+              <strong>Moyenne du cours :</strong> {moyenne} / 20
+            </Typography>
+          )}
+        </Box>
+
+        <Typography variant="h6" sx={{ color: "primary.main", mb: 2 }}>
+          📝 Notes des étudiants
+        </Typography>
 
         {grades.length === 0 ? (
-          <p>Aucune note trouvée pour cette matière.</p>
+          <Typography color="text.secondary">
+            Aucune note saisie pour ce cours.
+          </Typography>
         ) : (
-          grades.map((g, index) => (
+          grades.map((g) => (
             <Box
-              key={index}
+              key={g._id}
               sx={{
                 my: 1,
                 p: 2,
                 borderRadius: 2,
-                bgcolor: "#f5f5f5",
+                bgcolor: "background.paper",
+                color: "text.primary",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              <strong>Étudiant :</strong> {g.student?.name || "Non défini"}  
-              <br />
-              <strong>Note :</strong>{" "}
-              <Chip label={g.grade} color="primary" />
+              <Box>
+                <Typography>
+                  <strong>Étudiant :</strong>{" "}
+                  {g.student?.firstName} {g.student?.lastName}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {g.student?.email}
+                </Typography>
+              </Box>
+
+              <Chip
+                label={`${g.grade} / 20`}
+                color={g.grade >= 10 ? "success" : "error"}
+                sx={{ fontWeight: "bold" }}
+              />
             </Box>
           ))
         )}

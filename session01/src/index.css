@@ -16,12 +16,12 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-  min-height: 80rem;
+  min-height: 100vh;
 }
 
 header {
   text-align: center;
-  margin: 3rem 0;
+  margin: 0.0rem 0;
 }
 
 header img {
@@ -159,4 +159,20 @@ main h2 {
 
 .menu-item {
   cursor: pointer;
+}
+.footer {
+  background: #2d1b4e; /* cohérent avec radial-gradient */
+  color: #ebe7ef;
+  margin: 0;
+  padding: 10px 0px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* ✅ Spécial pour la page login */
+.footer-login {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+  box-shadow: none;
 }

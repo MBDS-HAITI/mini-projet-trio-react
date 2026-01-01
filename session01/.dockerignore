@@ -1,0 +1,29 @@
+# Dépendances
+node_modules
+pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Fichiers d'environnement
+.env
+.env.*
+*.local
+
+# Builds locaux
+dist
+dist-ssr
+
+# Git
+.git
+.gitignore
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+docker-compose.yml

@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./student_management
+    container_name: student-backend
+    ports:
+      - "8010:8010"
+    env_file:
+      - ./student_management/.env
+
+  frontend:
+    build: ./session01
+    container_name: student-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend

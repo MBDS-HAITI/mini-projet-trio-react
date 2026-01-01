@@ -1,0 +1,31 @@
+# Dépendances
+node_modules
+npm-debug.log*
+yarn-error.log*
+
+# Variables d'environnement
+.env
+.env.*
+*.local
+
+# Base de données locale
+*.sqlite
+*.db
+
+# Logs
+logs
+*.log
+
+# Git
+.git
+.gitignore
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+docker-compose.yml

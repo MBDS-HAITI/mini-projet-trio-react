@@ -6,8 +6,9 @@ import { Link } from "react-router-dom";
 
 export default function Login() {
   const theme = useTheme();
+  const API_URL = import.meta.env.VITE_API_URL;
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8010/api/auth/google';
+    window.location.href = `${API_URL}/auth/google`;
   };
 
   return (
@@ -45,7 +46,13 @@ export default function Login() {
             </svg>
             Se connecter avec Google
           </button>
-
+          <p className="login-access-info">
+            Accès réservé aux étudiants et au personnel de l’établissement.
+            <br />
+            <em>
+              Si vous n’avez pas de compte, veuillez contacter l’administration.
+            </em>
+          </p>
           {/* Features */}
           <Box className="login-features">
             <span className="login-feature-item">🎯 Gestion des notes</span>

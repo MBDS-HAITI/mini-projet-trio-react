@@ -228,6 +228,27 @@
   }
 }
 
+.login-access-info {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.login-access-info em {
+  font-style: italic;
+  color: #777;
+}
+
+.login-container.dark .login-access-info {
+  color: #e0e0e0;
+}
+
+.login-container.dark .login-access-info em {
+  color: #cfcfcf;
+}
+
 /* ========================= */
 /* 🌙 Dark mode overrides */
 /* ========================= */

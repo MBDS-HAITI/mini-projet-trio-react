@@ -1,3 +1,5 @@
+# student_management/Backend
+
 /node_modules/
 /.idea/
 
@@ -25,3 +27,6 @@ logs/
 *.db
 
 # Build
+
+# Tests
+coverage/

@@ -13,7 +13,7 @@ const startServer = async () => {
             console.log('🚀 ====================================');
             console.log(`🚀 Serveur démarré avec succès!`);
             console.log(`🚀 Environnement: ${config.nodeEnv}`);
-            console.log(`🚀 URL: http://localhost:${config.port}`);
+            console.log(`🚀 URL: Serveur fonctionne sur ${config.port}`);
             console.log('🚀 ====================================');
         });
         

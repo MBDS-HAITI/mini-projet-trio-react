@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 // Charge les variables d'environnement depuis le fichier .env
 require('dotenv').config();
 
@@ -35,13 +33,15 @@ const config = {
 // Validation des variables d'environnement essentielles
 const requiredEnvVars = ['MONGO_URI'];
 
-if (config.nodeEnv === 'production') {
-    requiredEnvVars.push('SESSION_SECRET');
+if (config.nodeEnv === 'production' && !process.env.SESSION_SECRET) {
+    console.error('❌ SESSION_SECRET manquante en production!');
+    process.exit(1);
 }
 
 requiredEnvVars.forEach(varName => {
     if (!process.env[varName]) {
-        console.warn(`⚠️  Variable d'environnement manquante: ${varName}`);
+        console.error(`❌ Variable d'environnement manquante: ${varName}`);
+        process.exit(1);
     }
 });
 

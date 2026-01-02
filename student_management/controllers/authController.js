@@ -13,9 +13,9 @@ const config = require('../config/env');
 // 🔧 CONFIGURATION OAUTH2 CLIENT
 // ========================================
 console.log('🧪 Google config:', {
-  id: config.googleClientId,
-  secret: config.googleClientSecret,
-  callback: config.googleCallbackUrl
+    id: config.googleClientId,
+    secret: config.googleClientSecret,
+    callback: config.googleCallbackUrl
 });
 
 const oauth2Client = new google.auth.OAuth2(
@@ -64,14 +64,14 @@ exports.initiateGoogleAuth = (req, res) => {
  */
 exports.googleCallback = async (req, res) => {
     try {
-         // 🔍 LOGS CRITIQUES DE DIAGNOSTIC (À AJOUTER ICI)
+        // 🔍 LOGS CRITIQUES DE DIAGNOSTIC (À AJOUTER ICI)
         console.log(
-          "CALLBACK HIT:",
-          req.protocol + "://" + req.get("host") + req.originalUrl
+            "CALLBACK HIT:",
+            req.protocol + "://" + req.get("host") + req.originalUrl
         );
         console.log(
-          "EXPECTED CALLBACK:",
-          process.env.GOOGLE_CALLBACK_URL
+            "EXPECTED CALLBACK:",
+            process.env.GOOGLE_CALLBACK_URL
         );
         const { code } = req.query;
 
@@ -82,6 +82,12 @@ exports.googleCallback = async (req, res) => {
         }
 
         console.log('📨 Code d\'autorisation reçu');
+        if (req.session?.oauthUsed) {
+            console.warn("⚠️ OAuth callback already used");
+            return res.redirect(`${process.env.FRONT_URL}/login?error=oauth_reuse`);
+        }
+
+        req.session.oauthUsed = true;
 
         // ─────────────────────────────────────────
         // 1️⃣ Échange du code contre les tokens
@@ -94,9 +100,9 @@ exports.googleCallback = async (req, res) => {
         // ─────────────────────────────────────────
         // 2️⃣ Récupérer les informations utilisateur
         // ─────────────────────────────────────────
-        const oauth2 = google.oauth2({ 
-            version: 'v2', 
-            auth: oauth2Client 
+        const oauth2 = google.oauth2({
+            version: 'v2',
+            auth: oauth2Client
         });
         const { data: userInfo } = await oauth2.userinfo.get();
 
@@ -130,46 +136,46 @@ exports.googleCallback = async (req, res) => {
         user.googleId = userInfo.id;
         user.name = userInfo.name;
         user.picture = userInfo.picture;
-        
+
         // Chiffrement du refresh token pour la sécurité
         if (tokens.refresh_token) {
             user.refreshToken = encrypt(tokens.refresh_token);
         }
-        
+
         user.accessToken = tokens.access_token;
         console.log('⏱️ expires_in (callback) =', tokens.expires_in);
 
-if (typeof tokens.expires_in === 'number') {
-  user.tokenExpiry = Date.now() + tokens.expires_in * 1000;
-} else {
-  console.warn('⚠️ expires_in manquant dans callback, défaut +1h');
-  user.tokenExpiry = Date.now() + 60 * 60 * 1000;
-}
-        
+        if (typeof tokens.expires_in === 'number') {
+            user.tokenExpiry = Date.now() + tokens.expires_in * 1000;
+        } else {
+            console.warn('⚠️ expires_in manquant dans callback, défaut +1h');
+            user.tokenExpiry = Date.now() + 60 * 60 * 1000;
+        }
+
         await user.save();
 
         console.log('💾 Tokens sauvegardés pour:', user.email);
 
-// ─────────────────────────────────────────
-// 🔗 Lier l'utilisateur au Student existant
-// ─────────────────────────────────────────
-if (user.role === 'STUDENT' && user.email) {
-  const student = await Student.findOne({
-    email: user.email
-  });
+        // ─────────────────────────────────────────
+        // 🔗 Lier l'utilisateur au Student existant
+        // ─────────────────────────────────────────
+        if (user.role === 'STUDENT' && user.email) {
+            const student = await Student.findOne({
+                email: user.email
+            });
 
-  if (student) {
-    if (!student.user) {
-      student.user = user._id;
-      await student.save();
-      console.log('🔗 Student lié au user:', student.email);
-    } else {
-      console.log('ℹ️ Student déjà lié à un user');
-    }
-  } else {
-    console.warn('⚠️ Aucun student trouvé pour l\'email:', user.email);
-  }
-}
+            if (student) {
+                if (!student.user) {
+                    student.user = user._id;
+                    await student.save();
+                    console.log('🔗 Student lié au user:', student.email);
+                } else {
+                    console.log('ℹ️ Student déjà lié à un user');
+                }
+            } else {
+                console.warn('⚠️ Aucun student trouvé pour l\'email:', user.email);
+            }
+        }
 
         // ─────────────────────────────────────────
         // 5️⃣ 🔥 CRÉATION DE LA SESSION SSO
@@ -191,7 +197,7 @@ if (user.role === 'STUDENT' && user.email) {
 
     } catch (error) {
         console.error('❌ Erreur lors du callback Google:', error);
-        
+
         // Log détaillé en développement
         if (config.nodeEnv === 'development') {
             console.error('Stack trace:', error.stack);
@@ -218,8 +224,8 @@ exports.logout = async (req, res) => {
         req.session.destroy((err) => {
             if (err) {
                 console.error('❌ Erreur lors de la destruction de session:', err);
-                return res.status(500).json({ 
-                    error: 'Erreur lors de la déconnexion' 
+                return res.status(500).json({
+                    error: 'Erreur lors de la déconnexion'
                 });
             }
 
@@ -231,9 +237,9 @@ exports.logout = async (req, res) => {
             // Réponse selon le type de requête
             if (req.xhr || req.headers.accept?.indexOf('json') > -1) {
                 // Requête AJAX / API
-                res.json({ 
+                res.json({
                     success: true,
-                    message: 'Déconnexion réussie' 
+                    message: 'Déconnexion réussie'
                 });
             } else {
                 // Requête normale (navigateur)
@@ -243,8 +249,8 @@ exports.logout = async (req, res) => {
 
     } catch (error) {
         console.error('❌ Erreur lors de la déconnexion:', error);
-        res.status(500).json({ 
-            error: 'Erreur lors de la déconnexion' 
+        res.status(500).json({
+            error: 'Erreur lors de la déconnexion'
         });
     }
 };
@@ -281,8 +287,8 @@ exports.checkAuthStatus = (req, res) => {
 
     } catch (error) {
         console.error('❌ Erreur lors de la vérification du statut:', error);
-        res.status(500).json({ 
-            error: 'Erreur lors de la vérification' 
+        res.status(500).json({
+            error: 'Erreur lors de la vérification'
         });
     }
 };

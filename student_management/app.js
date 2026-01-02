@@ -58,7 +58,8 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000,  // 24 heures
     httpOnly: true,
     secure: config.nodeEnv === 'production',
-    sameSite: config.nodeEnv === 'production' ? "none" : "lax"
+    sameSite: config.nodeEnv === 'production' ? "none" : "lax",
+    domain: config.nodeEnv === 'production' ? ".onrender.com" : undefined
   }
 }));
 

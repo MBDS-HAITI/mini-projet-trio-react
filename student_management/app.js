@@ -11,7 +11,9 @@ const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
 const app = express();
 
 // 🔐 IMPORTANT POUR HTTPS + COOKIES
-app.set("trust proxy", 1);
+if (config.nodeEnv === 'production') {
+  app.set("trust proxy", 1);
+}
 // ========================================
 // 🗄️ INITIALISATION BASE DE DONNÉES
 // ========================================
@@ -49,23 +51,23 @@ app.use(bodyParser.json());
 
 // Configuration des sessions
 app.use(session({
-    secret: config.sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 24 * 60 * 60 * 1000,  // 24 heures
-        httpOnly: true,
-        secure: config.nodeEnv === 'production',
-        sameSite: 'none'
-    }
+  secret: config.sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000,  // 24 heures
+    httpOnly: true,
+    secure: config.nodeEnv === 'production',
+    sameSite: config.nodeEnv === 'production' ? "none" : "lax"
+  }
 }));
 
 // Logging des requêtes (en développement uniquement)
 if (config.nodeEnv === 'development') {
-    app.use((req, res, next) => {
-        console.log(`${req.method} ${req.path}`);
-        next();
-    });
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`);
+    next();
+  });
 }
 
 // ========================================
@@ -90,12 +92,12 @@ app.use(prefix + '/stats', require('./routes/stats.routes'));
 // 🏠 ROUTE DE BASE (HEALTH CHECK)
 // ========================================
 app.get('/', (req, res) => {
-    res.json({
-        message: 'API is running',
-        status: 'OK',
-        environment: config.nodeEnv,
-        timestamp: new Date().toISOString()
-    });
+  res.json({
+    message: 'API is running',
+    status: 'OK',
+    environment: config.nodeEnv,
+    timestamp: new Date().toISOString()
+  });
 });
 
 // ========================================

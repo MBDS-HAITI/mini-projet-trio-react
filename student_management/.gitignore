@@ -7,6 +7,9 @@
 .env
 .env.local
 .env.*.local
+.env.dev
+.env.prod
+
 
 # Fichiers système
 .DS_Store

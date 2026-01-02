@@ -49,7 +49,7 @@ exports.initiateGoogleAuth = (req, res) => {
 
     } catch (error) {
         console.error('❌ Erreur lors de l\'initialisation Google Auth:', error);
-        res.status(500).redirect('/login?error=init_failed');
+        res.status(500).redirect(`${process.env.FRONT_URL}/login?error=init_failed`);
     }
 };
 
@@ -69,7 +69,7 @@ exports.googleCallback = async (req, res) => {
         // Validation du code
         if (!code) {
             console.error('❌ Code d\'autorisation manquant');
-            return res.status(400).redirect('/login?error=no_code');
+            return res.status(400).redirect(`${process.env.FRONT_URL}/login?error=no_code`);
         }
 
         console.log('📨 Code d\'autorisation reçu');
@@ -188,7 +188,7 @@ if (user.role === 'STUDENT' && user.email) {
             console.error('Stack trace:', error.stack);
         }
 
-        res.status(500).redirect('/login?error=auth_failed');
+        res.status(500).redirect(`${process.env.FRONT_URL}/login?error=auth_failed`);
     }
 };
 
@@ -228,7 +228,7 @@ exports.logout = async (req, res) => {
                 });
             } else {
                 // Requête normale (navigateur)
-                res.redirect('/login?message=logged_out');
+                res.redirect(`${process.env.FRONT_URL}/login?message=logged_out`);
             }
         });
 

@@ -35,8 +35,10 @@ const oauth2Client = new google.auth.OAuth2(
 exports.initiateGoogleAuth = (req, res) => {
     try {
         // Génère l'URL d'authentification Google
+        console.log("🔎 Using redirect_uri:", config.googleCallbackUrl);
         const authUrl = oauth2Client.generateAuthUrl({
             access_type: 'offline',  // Pour obtenir un refresh token
+            redirect_uri: config.googleCallbackUrl,
             scope: [
                 'https://www.googleapis.com/auth/userinfo.email',
                 'https://www.googleapis.com/auth/userinfo.profile'

@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const config = require('./config/env');
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
-
+const allowedOrigins = process.env.FRONT_URL.split(',');
 const app = express();
 
 // ========================================
@@ -21,20 +21,22 @@ require('./config/database');
 // ========================================
 
 // CORS - Pour accepter les connexions cross-domain
-/*app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', process.env.FRONT_URL);
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-});*/
-
 app.use(cors({
-  origin: process.env.FRONT_URL,
+  origin: function (origin, callback) {
+    // autoriser Postman / curl
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 
 // Body Parser - Pour les formulaires et JSON
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -49,7 +51,7 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000,  // 24 heures
         httpOnly: true,
         secure: config.nodeEnv === 'production',
-        sameSite: 'lax'
+        sameSite: 'none'
     }
 }));
 

@@ -64,6 +64,15 @@ exports.initiateGoogleAuth = (req, res) => {
  */
 exports.googleCallback = async (req, res) => {
     try {
+         // 🔍 LOGS CRITIQUES DE DIAGNOSTIC (À AJOUTER ICI)
+        console.log(
+          "CALLBACK HIT:",
+          req.protocol + "://" + req.get("host") + req.originalUrl
+        );
+        console.log(
+          "EXPECTED CALLBACK:",
+          process.env.GOOGLE_CALLBACK_URL
+        );
         const { code } = req.query;
 
         // Validation du code

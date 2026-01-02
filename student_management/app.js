@@ -10,6 +10,8 @@ const config = require('./config/env');
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
 const app = express();
 
+// 🔐 IMPORTANT POUR HTTPS + COOKIES
+app.set("trust proxy", 1);
 // ========================================
 // 🗄️ INITIALISATION BASE DE DONNÉES
 // ========================================

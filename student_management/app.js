@@ -8,7 +8,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const config = require('./config/env');
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
-const allowedOrigins = process.env.FRONT_URL.split(',');
 const app = express();
 
 // ========================================
@@ -21,6 +20,10 @@ require('./config/database');
 // ========================================
 
 // CORS - Pour accepter les connexions cross-domain
+const allowedOrigins = (process.env.FRONTEND_ORIGINS || "")
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
 app.use(cors({
   origin: function (origin, callback) {
     // autoriser Postman / curl

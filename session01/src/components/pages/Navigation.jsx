@@ -1,15 +1,16 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+
 import Login from './Login';
 import Notes from './Notes';
 import Etudiants from './Etudiants';
 import Matieres from './Matieres';
 import APropos from './APropos';
-import DetailsMatiere from "./DetailsMatiere";
-import DetailsNote from "./DetailsNote";
-import DetailsEtudiant from "./DetailsEtudiant";
-import Users from "./Users";
-import UserForm from "../forms/UserForm";
+import DetailsMatiere from './DetailsMatiere';
+import DetailsNote from './DetailsNote';
+import DetailsEtudiant from './DetailsEtudiant';
+import Users from './Users';
+import UserForm from '../forms/UserForm';
 import AdminDashboard from '../dashboards/AdminDashboard';
 import ScolariteDashboard from '../dashboards/ScolariteDashboard';
 import StudentDashboard from '../dashboards/StudentDashboard';
@@ -17,18 +18,13 @@ import StudentForm from '../forms/StudentForm';
 import CourseForm from '../forms/CourseForm';
 import GradeForm from '../forms/GradeForm';
 import EnrollStudent from './EnrollStudent';
-import Conditions from "./Conditions";
-
+import Conditions from './Conditions';
 
 function AppNavigation() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
 
-  // Routes publiques où le menu ne doit PAS s'afficher
-  const publicRoutes = ['/login'];
-  const isPublicRoute = publicRoutes.includes(location.pathname);
-
-  // Affichage du loader
+  // ⏳ Loader GLOBAL (bloque toute navigation tant que l’auth n’est pas connue)
   if (isLoading) {
     return (
       <div style={{
@@ -44,117 +40,101 @@ function AppNavigation() {
     );
   }
 
-  // Redirection si non connecté
-  if (!isAuthenticated) {
-    return (
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/conditions" element={<Conditions />} />
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
-    );
-  }
-
-  // Redirection vers dashboard si connecté ET sur login
-  if (isAuthenticated && location.pathname === '/login') {
-    return <Navigate to="/dashboard" replace />;
-  }
-
   return (
-    <>
-      {/* Afficher le menu uniquement si connecté ET pas sur une route publique */}
-      {isAuthenticated && !isPublicRoute}
+    <Routes>
 
-      <Routes>
-        {/* Route publique */}
-        <Route path="/login" element={<Login />} />
+      {/* =====================
+          🌍 ROUTES PUBLIQUES
+      ====================== */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/conditions" element={<Conditions />} />
 
-        {/* Routes communes */}
-        <Route path="/" element={<Navigate to="/dashboard" />} />
-        <Route path="/apropos" element={<APropos />} />
+      {/* Si NON authentifié → tout renvoie vers /login */}
+      {!isAuthenticated && (
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      )}
 
-        {/* ADMIN - Accès complet */}
-        {user.role === 'ADMIN' && (
-          <>
-            <Route path="/dashboard" element={<AdminDashboard />} />
+      {/* =====================
+          🔐 ROUTES AUTHENTIFIÉES
+      ====================== */}
+      {isAuthenticated && (
+        <>
+          {/* Redirection racine */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/apropos" element={<APropos />} />
 
-            {/* Notes */}
-            <Route path="/notes" element={<Notes />} />
-            <Route path="/notes/new" element={<GradeForm />} />
-            <Route path="/notes/:id" element={<DetailsNote />} />
-            <Route path="/notes/:id/edit" element={<GradeForm />} />
+          {/* ===== ADMIN ===== */}
+          {user.role === 'ADMIN' && (
+            <>
+              <Route path="/dashboard" element={<AdminDashboard />} />
 
-            {/* Étudiants */}
-            <Route path="/etudiants" element={<Etudiants />} />
-            <Route path="/etudiants/new" element={<StudentForm />} />
-            <Route path="/etudiants/:id" element={<DetailsEtudiant />} />
-            <Route path="/etudiants/:id/edit" element={<StudentForm />} />
+              <Route path="/notes" element={<Notes />} />
+              <Route path="/notes/new" element={<GradeForm />} />
+              <Route path="/notes/:id" element={<DetailsNote />} />
+              <Route path="/notes/:id/edit" element={<GradeForm />} />
 
-            {/* Matières */}
-            <Route path="/matieres" element={<Matieres />} />
-            <Route path="/matieres/new" element={<CourseForm />} />
-            <Route path="/matieres/:id" element={<DetailsMatiere />} />
-            <Route path="/matieres/:id/edit" element={<CourseForm />} />
+              <Route path="/etudiants" element={<Etudiants />} />
+              <Route path="/etudiants/new" element={<StudentForm />} />
+              <Route path="/etudiants/:id" element={<DetailsEtudiant />} />
+              <Route path="/etudiants/:id/edit" element={<StudentForm />} />
 
-            {/* Inscription */}
-            <Route path="/enroll" element={<EnrollStudent />} />
+              <Route path="/matieres" element={<Matieres />} />
+              <Route path="/matieres/new" element={<CourseForm />} />
+              <Route path="/matieres/:id" element={<DetailsMatiere />} />
+              <Route path="/matieres/:id/edit" element={<CourseForm />} />
 
-            {/* Utilisateurs */}
-            <Route path="/users" element={<Users />} />
-            <Route path="/users/new" element={<UserForm />} />
-          </>
-        )}
+              <Route path="/enroll" element={<EnrollStudent />} />
 
-        {/* SCOLARITE - Étudiants, cours, notes */}
-        {user.role === 'SCOLARITE' && (
-          <>
-            <Route path="/dashboard" element={<ScolariteDashboard />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/users/new" element={<UserForm />} />
+            </>
+          )}
 
-            {/* Notes */}
-            <Route path="/notes" element={<Notes />} />
-            <Route path="/notes/new" element={<GradeForm />} />
-            <Route path="/notes/:id" element={<DetailsNote />} />
-            <Route path="/notes/:id/edit" element={<GradeForm />} />
+          {/* ===== SCOLARITE ===== */}
+          {user.role === 'SCOLARITE' && (
+            <>
+              <Route path="/dashboard" element={<ScolariteDashboard />} />
 
-            {/* Étudiants */}
-            <Route path="/etudiants" element={<Etudiants />} />
-            <Route path="/etudiants/new" element={<StudentForm />} />
-            <Route path="/etudiants/:id" element={<DetailsEtudiant />} />
-            <Route path="/etudiants/:id/edit" element={<StudentForm />} />
+              <Route path="/notes" element={<Notes />} />
+              <Route path="/notes/new" element={<GradeForm />} />
+              <Route path="/notes/:id" element={<DetailsNote />} />
+              <Route path="/notes/:id/edit" element={<GradeForm />} />
 
-            {/* Matières */}
-            <Route path="/matieres" element={<Matieres />} />
-            <Route path="/matieres/new" element={<CourseForm />} />
-            <Route path="/matieres/:id" element={<DetailsMatiere />} />
-            <Route path="/matieres/:id/edit" element={<CourseForm />} />
+              <Route path="/etudiants" element={<Etudiants />} />
+              <Route path="/etudiants/new" element={<StudentForm />} />
+              <Route path="/etudiants/:id" element={<DetailsEtudiant />} />
+              <Route path="/etudiants/:id/edit" element={<StudentForm />} />
 
-            {/* Inscription */}
-            <Route path="/enroll" element={<EnrollStudent />} />
-          </>
-        )}
+              <Route path="/matieres" element={<Matieres />} />
+              <Route path="/matieres/new" element={<CourseForm />} />
+              <Route path="/matieres/:id" element={<DetailsMatiere />} />
+              <Route path="/matieres/:id/edit" element={<CourseForm />} />
 
-        {/* STUDENT - Ses notes uniquement */}
-        {user.role === 'STUDENT' && (
-          <>
-            <Route path="/dashboard" element={<StudentDashboard />} />
+              <Route path="/enroll" element={<EnrollStudent />} />
+            </>
+          )}
 
-            {/* Mes notes */}
-            <Route path="/mes-notes" element={<Notes />} />
-            <Route path="/mes-notes/:id" element={<DetailsNote />} />
+          {/* ===== STUDENT ===== */}
+          {user.role === 'STUDENT' && (
+            <>
+              <Route path="/dashboard" element={<StudentDashboard />} />
 
-            {/* Mes matières */}
-            <Route path="/mes-matieres" element={<Matieres />} />
-            <Route path="/mes-matieres/:id" element={<DetailsMatiere />} />
+              <Route path="/mes-notes" element={<Notes />} />
+              <Route path="/mes-notes/:id" element={<DetailsNote />} />
 
-            {/* Mon profil */}
-            <Route path="/mon-profil" element={<DetailsEtudiant />} />
-          </>
-        )}
+              <Route path="/mes-matieres" element={<Matieres />} />
+              <Route path="/mes-matieres/:id" element={<DetailsMatiere />} />
 
-        {/* 404 - Redirection par défaut */}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
-      </Routes>
-    </>
+              <Route path="/mon-profil" element={<DetailsEtudiant />} />
+            </>
+          )}
+
+          {/* Fallback authentifié */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </>
+      )}
+
+    </Routes>
   );
 }
 

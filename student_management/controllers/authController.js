@@ -194,7 +194,8 @@ exports.googleCallback = async (req, res) => {
         // 6️⃣ Redirection vers le dashboard
         // ─────────────────────────────────────────
         console.log('🚀 Redirection vers le dashboard');
-        res.redirect(`${process.env.FRONT_URL}/dashboard`);
+        res.redirect(process.env.FRONT_URL);
+       // res.redirect(`${process.env.FRONT_URL}/dashboard`);
         //res.redirect('${process.env.FRONT_URL}/dashboard');
 
     } catch (error) {

@@ -48,7 +48,7 @@ app.use(cors({
 // Body Parser - Pour les formulaires et JSON
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
+/*
 // Configuration des sessions
 app.use(session({
   secret: config.sessionSecret,
@@ -61,7 +61,20 @@ app.use(session({
     sameSite: config.nodeEnv === 'production' ? "none" : "lax",
     domain: config.nodeEnv === 'production' ? ".onrender.com" : undefined
   }
+}));*/
+
+app.use(session({
+  secret: config.sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: false,      // 🔥 OBLIGATOIRE en HTTP
+    sameSite: "lax",    // 🔥 OBLIGATOIRE
+  }
 }));
+
 
 // Logging des requêtes (en développement uniquement)
 if (config.nodeEnv === 'development') {

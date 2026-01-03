@@ -82,14 +82,14 @@ exports.googleCallback = async (req, res) => {
             console.error('❌ Code d\'autorisation manquant');
             return res.status(400).redirect(`${process.env.FRONT_URL}/login?error=no_code`);
         }
-
+/*
         console.log('📨 Code d\'autorisation reçu');
         if (req.session?.oauthUsed) {
             console.warn("⚠️ OAuth callback already used");
             return res.redirect(`${process.env.FRONT_URL}/login?error=oauth_reuse`);
         }
 
-        req.session.oauthUsed = true;
+        req.session.oauthUsed = true;*/
 
         // ─────────────────────────────────────────
         // 1️⃣ Échange du code contre les tokens

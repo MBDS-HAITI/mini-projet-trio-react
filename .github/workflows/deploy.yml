@@ -5,44 +5,32 @@ on:
     branches:
       - master
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Récupérer le code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Login à GitHub Container Registry
+      # 🔐 Login GHCR (pour pull côté EC2)
       - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
 
-      # 3️⃣ Build & push BACKEND
+      # 🐳 Build & push backend
       - name: Build & push backend image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./student_management
-          push: true
-          tags: ghcr.io/mbds-haiti/mini-projet-trio-react-backend:latest
+        run: |
+          docker build -t ghcr.io/mbds-haiti/mini-projet-trio-react-backend:latest ./student_management
+          docker push ghcr.io/mbds-haiti/mini-projet-trio-react-backend:latest
 
-      # 4️⃣ Build & push FRONTEND
+      # 🐳 Build & push frontend
       - name: Build & push frontend image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./session01
-          push: true
-          tags: ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest
+        run: |
+          docker build -t ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest ./session01
+          docker push ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest
 
-      # 5️⃣ Déploiement sur EC2 (RUN ONLY)
+      # 🚀 Deploy on EC2
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -50,6 +38,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
             cd ~/apps/mini-projet-trio-react
             docker compose pull
             docker compose up -d

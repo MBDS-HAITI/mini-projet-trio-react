@@ -8,6 +8,10 @@ FROM node:20 AS build
 # 2️⃣ Dossier de travail dans le container
 WORKDIR /app
 
+# Variables secrètes
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 # 3️⃣ Copier les fichiers de dépendances
 COPY package*.json ./
 

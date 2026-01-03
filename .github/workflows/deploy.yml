@@ -24,10 +24,15 @@ jobs:
           docker build -t ghcr.io/mbds-haiti/mini-projet-trio-react-backend:latest ./student_management
           docker push ghcr.io/mbds-haiti/mini-projet-trio-react-backend:latest
 
-      # 🐳 Build & push frontend
+            # 🐳 Build & push frontend
       - name: Build & push frontend image
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
-          docker build -t ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest ./session01
+          docker build \
+            --build-arg VITE_API_URL=$VITE_API_URL \
+            -t ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest \
+            ./session01
           docker push ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest
 
       # 🚀 Deploy on EC2

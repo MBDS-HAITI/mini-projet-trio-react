@@ -43,7 +43,10 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            cd ~/apps/mini-projet-trio-react
+            git pull origin master
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
             cd ~/apps/mini-projet-trio-react
             docker compose pull
+            docker compose down
             docker compose up -d

@@ -6,6 +6,7 @@ const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const { MongoStore } = require('connect-mongo');
 const config = require('./config/env');
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
 const app = express();
@@ -61,7 +62,7 @@ app.use(session({
     sameSite: config.nodeEnv === 'production' ? "none" : "lax",
     domain: config.nodeEnv === 'production' ? ".onrender.com" : undefined
   }
-}));*/
+}));
 
 app.use(session({
   secret: config.sessionSecret,
@@ -74,7 +75,27 @@ app.use(session({
     sameSite: "lax",    // 🔥 OBLIGATOIRE
   }
 }));
+*/
 
+
+app.use(session({
+  name: 'sid',
+  secret: config.sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+  
+  store: MongoStore.create({
+    mongoUrl: config.mongoUri,
+    collectionName: 'sessions',
+  }),
+  
+  cookie: {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+    maxAge: 24 * 60 * 60 * 1000
+  }
+}));
 
 // Logging des requêtes (en développement uniquement)
 if (config.nodeEnv === 'development') {

@@ -1,5 +1,7 @@
-// Charge les variables d'environnement depuis le fichier .env
-require('dotenv').config();
+// Charge les variables d'environnement depuis le fichier .env SEULEMENT en développement
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 // Validation de variable obligatoire
 if (!process.env.MONGO_URI) {

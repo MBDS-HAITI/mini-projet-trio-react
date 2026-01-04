@@ -62,20 +62,7 @@ app.use(session({
     sameSite: config.nodeEnv === 'production' ? "none" : "lax",
     domain: config.nodeEnv === 'production' ? ".onrender.com" : undefined
   }
-}));
-
-app.use(session({
-  secret: config.sessionSecret,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    secure: false,      // 🔥 OBLIGATOIRE en HTTP
-    sameSite: "lax",    // 🔥 OBLIGATOIRE
-  }
-}));
-*/
+})); */
 
 
 app.use(session({
@@ -83,16 +70,17 @@ app.use(session({
   secret: config.sessionSecret,
   resave: false,
   saveUninitialized: false,
-  
+
   store: MongoStore.create({
     mongoUrl: config.mongoUri,
     collectionName: 'sessions',
+    ttl: 24 * 60 * 60
   }),
-  
+
   cookie: {
     httpOnly: true,
-    secure: false,
-    sameSite: 'lax',
+    secure: config.nodeEnv === 'production', // HTTPS uniquement en prod
+    sameSite: 'lax',                         // ✅ simple et robuste
     maxAge: 24 * 60 * 60 * 1000
   }
 }));

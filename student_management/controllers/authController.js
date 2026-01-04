@@ -82,14 +82,14 @@ exports.googleCallback = async (req, res) => {
             console.error('❌ Code d\'autorisation manquant');
             return res.status(400).redirect(`${process.env.FRONT_URL}/login?error=no_code`);
         }
-/*
-        console.log('📨 Code d\'autorisation reçu');
-        if (req.session?.oauthUsed) {
-            console.warn("⚠️ OAuth callback already used");
-            return res.redirect(`${process.env.FRONT_URL}/login?error=oauth_reuse`);
-        }
-
-        req.session.oauthUsed = true;*/
+        /*
+                console.log('📨 Code d\'autorisation reçu');
+                if (req.session?.oauthUsed) {
+                    console.warn("⚠️ OAuth callback already used");
+                    return res.redirect(`${process.env.FRONT_URL}/login?error=oauth_reuse`);
+                }
+        
+                req.session.oauthUsed = true;*/
 
         // ─────────────────────────────────────────
         // 1️⃣ Échange du code contre les tokens
@@ -189,13 +189,24 @@ exports.googleCallback = async (req, res) => {
         req.session.authenticated = true;
 
         console.log('🎫 Session créée pour:', user.email);
+        req.session.save((err) => {
+            if (err) {
+                console.error('❌ Erreur sauvegarde session:', err);
+                return res.status(500).redirect(`${process.env.FRONT_URL}/login?error=session_failed`);
+            }
 
-        // ─────────────────────────────────────────
-        // 6️⃣ Redirection vers le dashboard
-        // ─────────────────────────────────────────
-        console.log('🚀 Redirection vers le dashboard');
-        res.redirect(process.env.FRONT_URL);
-       // res.redirect(`${process.env.FRONT_URL}/dashboard`);
+            console.log('✅ Session sauvegardée - ID:', req.sessionID);
+            console.log('🔗 Cookie envoyé avec session');
+            console.log('🚀 Redirection vers le dashboard');
+            // ─────────────────────────────────────────
+            // 6️⃣ Redirection vers le dashboard
+            // ─────────────────────────────────────────
+            // Redirection après sauvegarde
+            res.redirect(process.env.FRONT_URL);
+        });
+        /*console.log('🚀 Redirection vers le dashboard');
+        res.redirect(process.env.FRONT_URL);*/
+        // res.redirect(`${process.env.FRONT_URL}/dashboard`);
         //res.redirect('${process.env.FRONT_URL}/dashboard');
 
     } catch (error) {

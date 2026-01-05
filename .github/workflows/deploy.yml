@@ -26,14 +26,13 @@ jobs:
 
             # 🐳 Build & push frontend
       - name: Build & push frontend image
-        env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
           docker build \
-            --build-arg VITE_API_URL=$VITE_API_URL \
+            --build-arg VITE_API_URL=/api \
             -t ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest \
             ./session01
           docker push ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest
+
 
       # 🚀 Deploy on EC2
       - name: Deploy on EC2

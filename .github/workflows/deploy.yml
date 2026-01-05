@@ -18,20 +18,17 @@ jobs:
         run: |
           echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
 
-      # 🐳 Build & push backend
-      - name: Build & push backend image
-        run: |
-          docker build -t ghcr.io/mbds-haiti/mini-projet-trio-react-backend:latest ./student_management
-          docker push ghcr.io/mbds-haiti/mini-projet-trio-react-backend:latest
-
-            # 🐳 Build & push frontend
+      # 🐳 Build & push frontend
       - name: Build & push frontend image
+        env:
+         VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
-          docker build \
-            --build-arg VITE_API_URL=/api \
-            -t ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest \
-            ./session01
-          docker push ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest
+         docker build \
+           --build-arg VITE_API_URL=$VITE_API_URL \
+           -t ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest \
+           ./session01
+         docker push ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest
+
 
 
       # 🚀 Deploy on EC2

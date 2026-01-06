@@ -45,10 +45,42 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            set -e
+
+            echo "📦 Vérification espace disque"
+            AVAILABLE_KB=$(df --output=avail / | tail -1)
+
+            AVAILABLE_GB=$((AVAILABLE_KB / 1024 / 1024))
+            AVAILABLE_MB=$((AVAILABLE_KB / 1024))
+
+            echo "📊 Espace disque disponible : ${AVAILABLE_GB} GB (~${AVAILABLE_MB} MB)"
+
+            if [ "$AVAILABLE_KB" -lt 1000000 ]; then
+              echo "❌ Espace disque insuffisant (<1GB). Déploiement annulé."
+              exit 1
+            fi
+
             cd ~/apps/mini-projet-trio-react
             git pull origin master
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
-            cd ~/apps/mini-projet-trio-react
-            docker compose pull
+
+            echo "🔐 Login GHCR"
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \
+              -u ${{ secrets.GHCR_USERNAME }} \
+              --password-stdin
+
+            echo "⬇️ Pull images Docker"
+            docker compose pull || {
+              echo "❌ Échec du pull Docker (probable manque d’espace disque)"
+              exit 1
+            }
+
+            echo "🚀 Redémarrage containers"
             docker compose down
             docker compose up -d
+
+            echo "🔍 Vérification image backend (date de création)"
+            docker inspect ghcr.io/mbds-haiti/mini-projet-trio-react-backend:latest \
+              | grep Created
+
+            echo "✅ Déploiement terminé"
+

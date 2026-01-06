@@ -29,7 +29,13 @@ jobs:
            ./session01
          docker push ghcr.io/mbds-haiti/mini-projet-trio-react-frontend:latest
 
-
+      # 🐳 Build & push backend image
+      - name: Build & push backend image
+        run: |
+          docker build \
+            -t ghcr.io/mbds-haiti/mini-projet-trio-react-backend:latest \
+            ./student_management
+          docker push ghcr.io/mbds-haiti/mini-projet-trio-react-backend:latest
 
       # 🚀 Deploy on EC2
       - name: Deploy on EC2

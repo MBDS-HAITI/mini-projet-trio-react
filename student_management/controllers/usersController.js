@@ -40,17 +40,43 @@ exports.getAllUsers = async (req, res, next) => {
   }
 };
 
-// ❌ Supprimer user
+// ❌ Supprimer user + détacher étudiant si nécessaire
 exports.deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const user = await User.findByIdAndDelete(id);
+    // 1️⃣ Récupérer le user
+    const user = await User.findById(id);
     if (!user) {
-       throw new AppError("Utilisateur introuvable", 404);
+      throw new AppError("Utilisateur introuvable", 404);
     }
 
-    res.json({ message: 'Utilisateur supprimé', user });
+    // 2️⃣ Si c'est un étudiant → détacher le Student
+    if (user.role === "STUDENT") {
+      await Student.updateOne(
+        { user: user._id },
+        { $unset: { user: "" } }
+      );
+    }
+
+    // 3️⃣ Supprimer le user
+    await User.findByIdAndDelete(id);
+
+    // 4️⃣ (optionnel mais recommandé) invalider sessions
+    if (req.sessionStore) {
+      req.sessionStore.all((err, sessions) => {
+        if (err) return;
+        Object.keys(sessions).forEach((sid) => {
+          const sess = sessions[sid];
+          if (sess?.userId === id) {
+            req.sessionStore.destroy(sid, () => {});
+          }
+        });
+      });
+    }
+
+    res.json({ message: "Utilisateur supprimé avec succès" });
+
   } catch (err) {
     next(err);
   }

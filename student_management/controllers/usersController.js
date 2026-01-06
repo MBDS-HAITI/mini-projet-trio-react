@@ -1,4 +1,5 @@
 const User = require('../model/user');
+const Student = require('../model/schemas');
 const { sendInvitation } = require('../services/mailService');
 const { AppError } = require('../middlewares/errorHandler');
 

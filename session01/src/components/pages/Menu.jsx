@@ -1,10 +1,11 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useMemo, useCallback } from "react";
 
 function Menu() {
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   // Configuration des menus par rôle - ADAPTÉ À AppNavigation
   const getMenuItems = useCallback((role) => {
@@ -17,7 +18,7 @@ function Menu() {
         { name: "Utilisateurs", icon: "👥", path: "/users" },
         { name: "À propos", icon: "ℹ️", path: "/apropos" }
       ],
-      SCOLARITE: [ 
+      SCOLARITE: [
         { name: "Dashboard", icon: "📊", path: "/dashboard" },
         { name: "Notes", icon: "📝", path: "/notes" },
         { name: "Etudiants", icon: "👨‍🎓", path: "/etudiants" },
@@ -25,7 +26,7 @@ function Menu() {
         { name: "À propos", icon: "ℹ️", path: "/apropos" }
       ],
       STUDENT: [
-        { name: "Dashboard", icon: "📊", path: "/dashboard" }, 
+        { name: "Dashboard", icon: "📊", path: "/dashboard" },
         { name: "Mes Notes", icon: "📝", path: "/mes-notes" },
         { name: "Mes Matières", icon: "📚", path: "/mes-matieres" },
         { name: "Mon Profil", icon: "👤", path: "/mon-profil" },
@@ -99,6 +100,11 @@ function Menu() {
     }
   }, []);
 
+  const handleLogout = async () => {
+    await logout(); // backend + reset du contexte
+    navigate("/login", { replace: true });
+  };
+
   return (
     <nav style={navStyle} role="navigation" aria-label="Menu principal">
       {menuItems.map((item) => {
@@ -120,6 +126,31 @@ function Menu() {
           </Link>
         );
       })}
+      <button
+        onClick={handleLogout}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "#ff6b6b";
+          e.currentTarget.style.transform = "translateY(-1px)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "#ff4d4f";
+          e.currentTarget.style.transform = "translateY(0)";
+        }}
+        style={{
+          padding: "12px 24px",
+          borderRadius: "8px",
+          border: "none",
+          cursor: "pointer",
+          background: "#ff4d4f",
+          color: "white",
+          fontSize: "16px",
+          fontWeight: "600",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.15)"
+        }}
+      >
+        🚪 Logout
+      </button>
+
     </nav>
   );
 }

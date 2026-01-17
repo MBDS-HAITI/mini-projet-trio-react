@@ -55,13 +55,17 @@ jobs:
 
             echo "📊 Espace disque disponible : ${AVAILABLE_GB} GB (~${AVAILABLE_MB} MB)"
 
-            if [ "$AVAILABLE_KB" -lt 1000000 ]; then
-              echo "❌ Espace disque insuffisant (<1GB). Déploiement annulé."
+            if [ "$AVAILABLE_KB" -lt 2000000 ]; then
+              echo "❌ Espace disque insuffisant (<2GB). Déploiement annulé."
               exit 1
             fi
 
             cd ~/apps/mini-projet-trio-react
             git pull origin master
+
+            echo "🧹 Stop containers & clean Docker"
+            docker compose down || true
+            docker system prune -a --volumes -f
 
             echo "🔐 Login GHCR"
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io \

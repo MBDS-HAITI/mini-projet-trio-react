@@ -69,19 +69,18 @@ Développer des dashboards adaptés aux rôles :
 -   Faire une **vidéo démo** de l'ensemble des fonctionnalités (publiée
     sur YouTube)
 
-#### Rendu Final du Projet
-### 🌐 Accès à l’application
-L’application est déployée et accessible en ligne à l’adresse suivante :
-https://student-management.duckdns.org/
-
-L’accès est sécurisé et restreint aux utilisateurs invités.
-
 ## 👨‍🎓 Travail réalisé par le groupe Trio React
 
 ### 👥 Membres du groupe
 - Times Alfred
 - Jeudy Ralph Stevens
 - Caleb Toussaint
+
+### 🌐 Accès à l’application
+L’application est déployée et accessible en ligne à l’adresse suivante :
+https://student-management.duckdns.org/
+
+L’accès est sécurisé et restreint aux utilisateurs invités.
 
 ### 🎯 Description de l’application
 Application complète de gestion académique permettant l’administration des étudiants,

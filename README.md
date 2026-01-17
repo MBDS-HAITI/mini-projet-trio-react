@@ -68,3 +68,67 @@ Développer des dashboards adaptés aux rôles :
 -   **Deadline ferme : Voir la date de l'assignation **\
 -   Faire une **vidéo démo** de l'ensemble des fonctionnalités (publiée
     sur YouTube)
+
+#### Rendu Final du Projet
+### 🌐 Accès à l’application
+L’application est déployée et accessible en ligne à l’adresse suivante :
+https://student-management.duckdns.org/
+
+L’accès est sécurisé et restreint aux utilisateurs invités.
+
+## 👨‍🎓 Travail réalisé par le groupe Trio React
+
+### 👥 Membres du groupe
+- Times Alfred
+- Jeudy Ralph Stevens
+- Caleb Toussaint
+
+### 🎯 Description de l’application
+Application complète de gestion académique permettant l’administration des étudiants,
+des cours et des notes avec authentification sécurisée, gestion des rôles et dashboards
+adaptés aux profils utilisateurs.
+
+### 🔐 Authentification & sécurité
+- Authentification OAuth 2
+- Connexion via Google (SSO) pour vérification des emails
+- Gestion des rôles :
+  - ADMIN
+  - SCOLARITÉ
+  - STUDENT
+- Accès restreint à la plateforme (invitation obligatoire)
+
+### 🚀 Fonctionnalités implémentées
+- Gestion des étudiants, cours et notes (CRUD)
+- Dashboards dynamiques selon le rôle utilisateur
+- Thème Material UI clair / sombre
+- Envoi d’emails d’invitation via Nodemailer
+- Sessions persistantes et sécurisées
+
+### 🗄️ Persistance des données
+Les données de l’application sont stockées dans une **base de données MongoDB distante**,
+hébergée dans le cloud.
+
+- Persistance des étudiants, cours, notes et utilisateurs
+- Accès sécurisé via variables d’environnement
+- Aucune donnée sensible stockée en dur dans le code
+
+### 📊 Statistiques
+- ADMIN : vision globale sur toutes les entités
+- SCOLARITÉ : suivi académique des étudiants
+- STUDENT : visualisation de ses notes et statistiques personnelles
+
+### 🐳 Containerisation & déploiement
+- Containerisation du frontend React et du backend Node.js avec Docker
+- Reverse proxy Nginx
+- Pipeline CI/CD avec GitHub Actions
+- Déploiement sur le cloud via AWS
+
+### 🎥 Vidéo de démonstration
+https://youtu.be/XXXXXXXXXXX  
+
+
+### 🔒 Sécurité & HTTPS
+- Application accessible exclusivement en **HTTPS**
+- Certificat SSL valide émis par **Let’s Encrypt**
+- Connexions chiffrées (TLS)
+- Requis pour l’authentification OAuth 2 (Google)

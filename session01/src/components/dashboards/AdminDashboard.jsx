@@ -83,35 +83,10 @@ export default function AdminDashboard() {
       </Grid>
 
       {/* ===== GRAPHIQUES ===== */}
-      <Grid container spacing={3}>
-        {/* Top cours */}
-        <Grid item xs={12} md={6}>
-          <Paper
-            elevation={3}
-            sx={{ p: 2, bgcolor: "background.paper", color: "text.primary" }}
-          >            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
-              📊 Top 7 cours par moyenne
-            </Typography>
-            <Box sx={{ height: 300 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={topCourses}
-                  layout="vertical"
-                  margin={{ left: 50 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
-                  <XAxis type="number" domain={[0, 20]} tick={{ fill: theme.palette.text.primary }} />
-                  <YAxis type="category" dataKey="courseName" width={120} tick={{ fill: theme.palette.text.primary }} />
-                  <Tooltip />
-                  <Bar dataKey="average" fill="#8884d8" name="Moyenne" />
-                </BarChart>
-              </ResponsiveContainer>
-            </Box>
-          </Paper>
-        </Grid>
+      <Grid container spacing={3} sx={{ maxWidth: 1100, mx: "auto" }}>
 
         {/* Distribution */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sx={{ width: "100%", mb: 3 }}>
           <Paper
             elevation={3}
             sx={{ p: 2, bgcolor: "background.paper", color: "text.primary" }}
@@ -138,28 +113,41 @@ export default function AdminDashboard() {
           </Paper>
         </Grid>
 
-        {/* Évolution */}
-        <Grid item xs={12} md={6}>
+
+        {/* Top cours */}
+        <Grid item
+          xs={12}
+          sm={8}
+        >
           <Paper
             elevation={3}
             sx={{ p: 2, bgcolor: "background.paper", color: "text.primary" }}
           >            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
-              📅 Évolution des inscriptions
+              📊 Top 7 cours par moyenne
             </Typography>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={stats?.enrollmentTrend || []}>
-                <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
-                <XAxis dataKey="month" tick={{ fill: theme.palette.text.primary }} />
-                <YAxis tick={{ fill: theme.palette.text.primary }} />
-                <Tooltip />
-                <Line type="monotone" dataKey="students" stroke={theme.palette.primary.main} name="Étudiants" />
-              </LineChart>
-            </ResponsiveContainer>
+            <Box sx={{ height: 300 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={topCourses}
+                  layout="vertical"
+                  margin={{ left: 30, right: 30 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
+                  <XAxis type="number" domain={[0, 20]} ticks={[5, 10, 15, 20]} tick={{ fontSize: 12, fill: theme.palette.text.primary }} />
+                  <YAxis type="category" dataKey="courseName" width={60} tick={{fontSize: 12, fill: theme.palette.text.primary }} />
+                  <Tooltip />
+                  <Bar dataKey="average" fill="#8884d8" name="Moyenne" />
+                </BarChart>
+              </ResponsiveContainer>
+            </Box>
           </Paper>
         </Grid>
 
         {/* Top étudiants */}
-        <Grid item xs={12} md={6}>
+        <Grid item
+          xs={12}
+          sm={4}
+        >
           <Paper
             elevation={3}
             sx={{ p: 2, bgcolor: "background.paper", color: "text.primary" }}

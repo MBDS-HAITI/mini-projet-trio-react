@@ -58,6 +58,8 @@ controller.update = async (req, res, next) => {
 controller.remove = async (req, res, next) => {
   try {
     const { id } = req.params;
+     //  Charger l'étudiant AVANT toute vérification
+    const student = await Student.findById(id);
     // ❌ lié à un user ?
     if (student.user) {
       throw new AppError(

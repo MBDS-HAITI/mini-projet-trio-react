@@ -123,7 +123,8 @@ hébergée dans le cloud.
 - Déploiement sur le cloud via AWS
 
 ### 🎥 Vidéo de démonstration
-https://youtu.be/OCLbUzIiVE0
+Lien de la vidéo de démonstration (mis à jour suite à un problème de paramétrage YouTube) :
+https://youtu.be/vdUNe12aPt4
 
 
 ### 🔒 Sécurité & HTTPS

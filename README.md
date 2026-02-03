@@ -123,9 +123,12 @@ hébergée dans le cloud.
 - Déploiement sur le cloud via AWS
 
 ### 🎥 Vidéo de démonstration
-Lien de la vidéo de démonstration (mis à jour suite à un problème de paramétrage YouTube) :
-https://youtu.be/vdUNe12aPt4
+Lien de la vidéo de démonstration :
+https://drive.google.com/file/d/1fF69SVEActFdjWq2w0c4FfbYs45H9ziX/view?usp=drive_link
 
+> Note : La vidéo est hébergée sur une plateforme alternative suite à la
+> suppression automatique des vidéos par YouTube (problème rencontré par
+> plusieurs étudiants).
 
 ### 🔒 Sécurité & HTTPS
 - Application accessible exclusivement en **HTTPS**
